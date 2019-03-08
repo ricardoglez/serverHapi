@@ -18,9 +18,9 @@ const mockSauceType = {
    beans: false,
    meat: true,
    chicken: true,
-   egg: true
+   egg: true,
+   others: ""
  }
-
 
 
 /*
@@ -36,6 +36,8 @@ const PlaceSchema = new Schema({
   complements        : Object,
   price              : Number,
   lastTime           : Number,
+  notes              : String,
+  service            : Number
 });
 
 module.exports = mongoose.model( 'Place', PlaceSchema );

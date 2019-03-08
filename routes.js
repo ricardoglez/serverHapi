@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const Place = require('./models/Place');
 
+const API = require('./api.js');
 module.exports = [
   {
     method: 'GET',
@@ -9,9 +10,7 @@ module.exports = [
       description: 'Get all the places',
       tags: ['api', 'v1', 'chilaquiles','food','cdmx']
     },
-    handler: (req, reply) => {
-        return Place.find();	
-      }
+    handler: API.all.handler
   },
   {
     method: 'POST',
@@ -19,37 +18,42 @@ module.exports = [
     options: { 
       validate: {
           payload: {
-              name: Joi.string().required(),
-              lastname: Joi.string().required()
+            name               : Joi.string().required() ,
+            location           : Joi.string().required() ,
+            points             : Joi.number().required(),
+            sauceType          : Joi.object().required(),
+            complements        : Joi.object().required(),
+            price              : Joi.number().required(),
+            lastTime           : Joi.number().required(),
+            service            : Joi.number().required(),
+            notes              : Joi.string(),
           },
           failAction: (request, h, error) => {
+            console.log(request.payload )
               return error.isJoi ? h.response(error.details[0]).takeover() : h.response(error).takeover();
           }
       }
     },
-    handler: async ( req, h ) => {
-      // console.log( req.payload, reply );
-      try{
-      
-        const { name, location, points, sauceType, complements, price, lastTime } = req.payload;
-        const place = new Place({
-          name,
-          location,
-          points,
-          sauceType,
-          complements,
-          price,
-          lastTime
-        });
-        console.log( ' try to save this place', place );
-        const result = await place.save(); 
-        
-        return h.response(result ) 
-      }
-      catch(error) {
-        return h.response(error).code(500)
-      }
-
+    handler: API.create.handler
+  },
+  {
+    method: 'PUT',
+    path: '/api/v1/places/{id}',
+    options: {
+      validate:{
+        payload: {
+          name               : Joi.string().required() ,
+          location           : Joi.string().required() ,
+          points             : Joi.number().required(),
+          sauceType          : Joi.object().required(),
+          complements        : Joi.object().required(),
+          price              : Joi.number().required(),
+          lastTime           : Joi.number().required(),
+          service            : Joi.number().required(),
+          notes              : Joi.string(),
+        }
+      },
+      handler: API.update.handler
     }
   },
   {
@@ -59,14 +63,6 @@ module.exports = [
       description: 'Delete a specific place by ID.',
       tags: ['api', 'v1', 'place']
     },
-    handler: async ( req, h ) => {
-      try{
-        const result = place.delete();
-        return h.response( result )
-      }
-      catch(error){
-        return h.response(error).code(500)
-      }
-    }
+    handler: API.remove.handler
   }
 ];

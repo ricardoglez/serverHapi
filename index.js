@@ -16,7 +16,7 @@ const server = hapi.server({
 	host: process.env.DB_HOST
 });
 
-mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds157762.mlab.com:57762/experiments`,
+mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ds157762.mlab.com:57762/experiments`,
  { useNewUrlParser: true}, ( err ) => { if( err ) throw err; }
  );
 
